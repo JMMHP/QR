@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom QR Code Generator</title>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<style>
+       .field-container {
+           margin-bottom: 10px;
+       }
+</style>
+</head>
+<body>
+<div id="inputFields">
+<div class="field-container">
+<input type="text" placeholder="Field Name" class="field-name">
+<input type="text" placeholder="Field Value" class="field-value">
+</div>
+</div>
+<button onclick="addField()">Add Another Field</button>
+<button onclick="generateQRCode()">Generate QR Code</button>
+<div id="qrcode"></div>
+<a id="downloadLink" href="#" download="qrcode.png" style="display:none;">Download QR Code</a>
+<script>
+   function addField() {
+       let container = document.getElementById('inputFields');
+       let newField = document.createElement('div');
+       newField.className = "field-container";
+       newField.innerHTML = `
+<input type="text" placeholder="Field Name" class="field-name">
+<input type="text" placeholder="Field Value" class="field-value">
+       `;
+       container.appendChild(newField);
+   }
+   function generateQRCode() {
+       let fieldNames = document.querySelectorAll('.field-name');
+       let fieldValues = document.querySelectorAll('.field-value');
+       let data = [];
+       for (let i = 0; i < fieldNames.length; i++) {
+           data.push(`${fieldNames[i].value}: ${fieldValues[i].value}`);
+       }
+       let qrcode = new QRCode(document.getElementById("qrcode"), {
+           text: data.join('\n'),
+           width: 128,
+           height: 128,
+           colorDark : "#000000",
+           colorLight : "#ffffff",
+           correctLevel : QRCode.CorrectLevel.L
+       });
+       setTimeout(() => {
+           let downloadLink = document.getElementById('downloadLink');
+           downloadLink.href = document.querySelector('#qrcode img').src;
+           downloadLink.style.display = 'block';
+       }, 100);
+   }
+</script>
+</body>
+</html>
